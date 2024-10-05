@@ -12,6 +12,7 @@ const express = require('express');
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsdoc = require('swagger-jsdoc');
 const userRouter = require('./routes/user.router');
+const friendRouter = require('./routes/friend.router');
 
 const app = express()
 const PORT = process.env.PORT
@@ -44,6 +45,7 @@ app.get("/", (req, res) => {
 });
 
 app.use('/users', userRouter);
+app.use('/friends', friendRouter);
 
 if (process.env.NODE_ENV !== 'test') {
     const startServer = async () => {

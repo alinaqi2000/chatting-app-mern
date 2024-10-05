@@ -5,9 +5,9 @@ const authMiddleware = require('./middlewares/auth.middleware')
 const userRouter = express.Router();
 
 userRouter.post("/register", async (req, res) => {
- const {full_name,email,username,security,password}= req.body
+ const {fullName,email,username,security,password}= req.body
 
-    if (!full_name
+    if (!fullName
         || !email
         || !username
         || !(security && security.question && security.answer)
@@ -23,14 +23,14 @@ userRouter.post("/register", async (req, res) => {
         return res.status(400).json({ error: "This email or username is already taken!" });
     }
 
-    const user = new User({ full_name, email, security, username, password });
+    const user = new User({ fullName, email, security, username, password });
     await user.save();
 
     const token = user.generateJWT('allAccess');
 
     res.json({
         user: {
-            full_name: user.full_name,
+            fullName: user.fullName,
             username: user.username,
             email: user.email
         },
@@ -63,7 +63,7 @@ userRouter.post("/login", async (req, res) => {
 
     res.json({
         user: {
-            full_name: user.full_name,
+            fullName: user.fullName,
             username: user.username,
             email: user.email
         },
@@ -111,7 +111,7 @@ userRouter.post("/verify-security-question", authMiddleware, async (req, res) =>
 
     res.json({
         user: {
-            full_name: user.full_name,
+            fullName: user.fullName,
             username: user.username,
             email: user.email
         },
@@ -128,7 +128,7 @@ userRouter.get("/verify", authMiddleware, async (req, res) => {
 
     res.json({
         user: {
-            full_name: user.full_name,
+            fullName: user.fullName,
             username: user.username,
             email: user.email
         },

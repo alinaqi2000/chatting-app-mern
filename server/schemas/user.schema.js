@@ -13,23 +13,34 @@ const userSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
-    full_name: {
+    fullName: {
         type: String,
         required: true
     },
     security: {
-        type: {
-            question: String,
-            answer: String,
+        question: {
+            type: String,
+            required: true
         },
-        required: true
+        answer: {
+            type: String,
+            required: true
+        }
     },
     password: {
         type: String,
         required: true
+    },
+    chatIds: [{
+        type: mongoose.Schema.Types.ObjectId,  // Array of references to Chat
+        ref: 'Chat'
+    }],
+    avatar: {
+        type: String
     }
-});
+}, { timestamps: true });
 
+// Hash password before saving
 userSchema.pre('save', async function (next) {
     if (!this.isModified('password')) return next();
 
@@ -42,13 +53,15 @@ userSchema.pre('save', async function (next) {
     }
 });
 
+// Compare password method
 userSchema.methods.comparePassword = async function (password) {
     return bcrypt.compare(password, this.password);
 };
 
+// Generate JWT method
 userSchema.methods.generateJWT = function (role) {
     const token = jwt.sign(
-        { id: this._id, username: this.username, full_name: this.full_name, email: this.email, role },
+        { id: this._id, username: this.username, fullName: this.fullName, email: this.email, role },
         process.env.JWT_SECRET_KEY,
         { expiresIn: '2h' }
     );
